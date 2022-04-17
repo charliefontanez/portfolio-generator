@@ -16,12 +16,49 @@ var promptUser = () => {
     {
       type: 'input',
       name: 'name',
-      message: 'What is your name?'
+      message: 'What is your name? (Required)',
+      validate: nameInput => {
+        if (nameInput) {
+          return true;
+        }
+        else {
+          console.log("Please enter your name!");
+          return false;
+        }
+      }
     },
     {
       type: 'input',
       name: 'github',
-      message: 'Enter your GitHub username'
+      message: 'Enter your GitHub username (Required)',
+      validate: usernameInput => {
+        if (usernameInput) {
+          return true;
+        }
+        else {
+          console.log("Please enter your GitHub Username");
+          return false;
+        }
+      }
+    },
+    {
+      type: 'confirm',
+      name: 'confirmAbout',
+      message: 'Would you like to enter some information about yourself for an "About section?',
+      default: true
+    },
+    {
+      type: 'input',
+      name: 'about',
+      message: 'Provide some information about yourself:',
+      when: ({ confirmAbout }) => {
+        if (confirmAbout) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
     },
     {
       type: 'input',
@@ -46,12 +83,30 @@ Add a New Project
     {
       type: 'input',
       name: 'name',
-      message: 'What is the name of your project?'
+      message: 'What is the name of your project? (Required)',
+      validate: projectNameInput => {
+        if (projectNameInput) {
+          return true;
+        }
+        else {
+          console.log("Please enter a project name.");
+          return false;
+        }
+      }
     },
     {
       type: 'input',
       name: 'description',
-      message: 'Provide a description of the project (Required)'
+      message: 'Provide a description of the project (Required)',
+      validate: descriptionInput => {
+        if (descriptionInput) {
+          return true;
+        }
+        else {
+          console.log("Please provide a description for your project");
+          return false;
+        }
+      }
     },
     {
       type: 'checkbox',
