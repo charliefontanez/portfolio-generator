@@ -59,11 +59,6 @@ var promptUser = () => {
           return false;
         }
       }
-    },
-    {
-      type: 'input',
-      name: 'about',
-      message: 'Provide some information about yourself:'
     }
   ]);
 };
@@ -74,10 +69,9 @@ const promptProject = portfolioData => {
   portfolioData.projects = [];
   }
 
-  console.log(`
-=================
-Add a New Project
-=================
+  console.log(`  =================
+  Add a New Project
+  =================
 `);
   return inquirer.prompt([
     {
