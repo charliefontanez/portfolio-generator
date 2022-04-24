@@ -1,5 +1,5 @@
-const inquirer = require('inquirer');
 const fs = require('fs');
+const inquirer = require('inquirer');
 const generatePage = require('./src/page-template.js');
 
 const mockData = {
@@ -48,12 +48,8 @@ const mockData = {
   ]
 };
 
-const pageHTML = generatePage(mockData);
-
-
 var promptUser = () => {
-  return inquirer
-  .prompt([
+  return inquirer.prompt([
     {
       type: 'input',
       name: 'name',
@@ -105,15 +101,16 @@ var promptUser = () => {
 };
 
 const promptProject = portfolioData => {
+  console.log(`
+=================
+Add a New Project
+=================
+`);
 
-  if (portfolioData.projects === false) {
-  portfolioData.projects = [];
+  if (!portfolioData.projects) {
+    portfolioData.projects = [];
   }
 
-  console.log(`  =================
-  Add a New Project
-  =================
-`);
   return inquirer.prompt([
     {
       type: 'input',
@@ -152,7 +149,16 @@ const promptProject = portfolioData => {
     {
       type: 'input',
       name: 'link',
-      message: 'Enter the GitHub link to your project. (Required)'
+      message: 'Enter the GitHub link to your project. (Required)',
+      validate: linkInput => {
+        if (linkInput) {
+          return true;
+        }
+        else {
+          console.log('You need to enter a project Github link!');
+          return false;
+        }
+      }
     },
     {
       type: 'confirm',
@@ -167,22 +173,25 @@ const promptProject = portfolioData => {
       default: false
     }
   ])
-}
-
-promptUser()
-.then(
-  fs.writeFile("index.html", response, "utf8",(err) => {
-    if (err) {
-      console.log(err);
+  .then(projectData => {
+    portfolioData.projects.push(projectData);
+    if (projectData.confirmAddProject) {
+      return promptProject(portfolioData);
     }
     else {
-      console.log("File written successfully\n");
-      console.log("The written has the following contents:");
-      console.log(fs.readFileSync("index.html", "utf8"));
+      return portfolioData;
     }
-  }
-))
+  });
+};
+
+
+promptUser()
   .then(promptProject)
   .then(portfolioData => {
     console.log(portfolioData);
-  });
+    const pageHTML = generatePage(portfolioData);
+    fs.writeFile('./index.html', pageHTML, err => {
+      if (err) throw new Error(err);
+        console.log('Page created! Check out index.html in this directory to see it!');
+    });
+  })
